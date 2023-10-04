@@ -1,15 +1,32 @@
 import { Formik, Field } from 'formik';
 
 import { FormFlex, Box } from './Form.styled';
+import { useDispatch, useSelector } from 'react-redux';
+import { addNewContact } from 'redux/contactReducer';
 
-export const ContactForm = ({onAdd}) => {
+export const ContactForm = () => {
+    const dispatch = useDispatch();
+    const contacts = useSelector(state => state.contacts);
+
+    const checkingContact = contact => {
+        return contacts.find(elem => elem.name.toLowerCase() === contact.name.toLowerCase())
+    }
+
+    const addThisContact = contact => {
+        if (checkingContact(contact)) {
+            return window.alert('Contact already exists.')
+        } else {
+            dispatch(addNewContact(contact))
+        }
+    }
+
 return <Formik
     initialValues={{
         name: '',
         number: ''
     }}
     onSubmit={
-        values => onAdd(values)}>
+        values => {addThisContact(values)}}>
     <FormFlex>
     <Box>
             Name
